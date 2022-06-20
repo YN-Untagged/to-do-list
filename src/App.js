@@ -1,24 +1,28 @@
-import logo from './logo.svg';
 import './App.css';
+import Login from './components/login';
+import Register from './components/register';
+import Home from './components/home';
+import storageHelpers from './components/localStorageExports';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import bcrypt from 'bcryptjs/dist/bcrypt';
+
 
 function App() {
+  if(localStorage.getItem('users') === null){
+    let salt = bcrypt.genSaltSync(10);
+    let hash = bcrypt.hashSync("pass123", salt);
+    const users =[{ name: 'Dummy', surname: 'User', email: 'dummy@mail.com', password: hash, src: 'images/profile.jpg',  tasks: []}];
+    storageHelpers.storeUsers(users);
+  }
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" component={<Register/>}/>
+        </Routes>
+    </Router>
   );
 }
 
