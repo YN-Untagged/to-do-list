@@ -1,7 +1,7 @@
 import React from 'react';
 import swal from 'sweetalert';
-import bcrypt from 'bcryptjs/dist/bcrypt';
 import {Link} from 'react-router-dom';
+import storageHelpers from './localStorageExports';
 
 function Register () {
     const registerUser = ((e)=>{
@@ -12,6 +12,7 @@ function Register () {
         if(form.password.value === form.cpassword.value){
             const results = RegisterUser(form);
             if(results){
+                
                 swal({
                     title: 'Registered successfully',
                     text: 'Your account has been registered',
@@ -95,9 +96,8 @@ function RegisterUser(form){
     //If no user is found, add user to storage
     if(!found){
         let src = 'images/profile.jpg'; 
-        const users = JSON.parse(localStorage.getItem('users'));
-        let salt = bcrypt.genSaltSync(10);
-        let hash = bcrypt.hashSync(form.password.value, salt);
+        const users = JSON.parse(localStorage.getItem('users')),
+        password = storageHelpers.hashPassword(form.password.value);
 
         if(sessionStorage.getItem('profile') !== null ){
             src = sessionStorage.getItem('profile');
@@ -107,7 +107,7 @@ function RegisterUser(form){
             name: form.name.value,
             surname: form.surname.value,
             email: form.email.value,
-            password: hash,
+            password: password,
             src: src,
             tasks: []
         }
