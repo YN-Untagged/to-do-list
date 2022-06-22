@@ -18,7 +18,7 @@ function EditModal ({tsk, show, handleClose, edit}){
             tsk.name = form.name.value;
             tsk.priority = form.priority.value;
             tsk.due = form.due.value;
-            tsk.complete = form.complete.value;
+            tsk.complete = form.complete.checked;
 
             edit(tsk);
         });

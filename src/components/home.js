@@ -10,15 +10,12 @@ function Home (){
             <Login/>
         ) 
         : (
-            <div className='container-fluid page'>
-                <div className='side_nav'>
-                    <Navigator/>
-                </div>
-                
-                <div className='main_container'>
+            <>
+                <Navigator/>
+                <div className='container-fluid page'>
                     <TaskList />
                 </div>
-            </div>
+            </>
         )
         
     );

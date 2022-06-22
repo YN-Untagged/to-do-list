@@ -85,13 +85,15 @@ function Task ({task, edit, remove, show}) {
                 )}
             </td>
             
-            <td className= 'justify-content-end'>
-                {
-                    !task.complete ? (
-                    <button type='button' className='btn btn-primary' onClick={handleEditClick}><i className='fas fa-pencil-alt'></i></button>
-                    ):( <></>)
-                }
-                <button type='button' className='btn btn-danger' onClick={handleRemoveClick}><i className='fas fa-trash'></i></button>
+            <td>
+                <p className='d-flex justify-content-end'>
+                    {
+                        !task.complete ? (
+                            <button type='button' className='btn btn-primary' onClick={handleEditClick}><i className='fas fa-pencil-alt'></i></button>
+                        ):( <></>)
+                    }
+                    <button type='button' className='btn btn-danger' onClick={handleRemoveClick}><i className='fas fa-trash'></i></button>
+                </p>
             </td>
             
         </tr>

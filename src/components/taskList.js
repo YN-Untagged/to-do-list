@@ -72,12 +72,12 @@ function TaskList() {
         <>
             <div className='container-fluid'>
                 <form method='Post' onSubmit={addItem}>
-                <div className='input-group mb-3 mt-3'>
-                    <div className='form-floating'>
+                <div className='input-group mb-3 mt-3 w-100'>
+                    <div className='form-floating col-5'>
                         <input className='form-control' name='name' type='text' id='name' placeholder='Enter task' required />
                         <label for='name'>Task</label>
                     </div>
-                    <div className='form-floating'>
+                    <div className='form-floating col-3'>
                         <select className='form-control' name='priority' id='priority'>
                             <option value='Low'>Low</option>
                             <option value='Moderate'>Moderate</option>
@@ -86,20 +86,21 @@ function TaskList() {
                         <label for='priority'>Priority</label>
                     </div>
                     
-                    <div className='form-floating'>
+                    <div className='form-floating col-3'>
                         <input className='form-control' name='due' type='datetime-local' min={new Date().toISOString().slice(0, 16)} id='due' />
                         <label for='due'>Due Date</label>
                     </div>
                     
-                    <button className='btn btn-success' type='submit'>Add</button>
+                    <button className='btn btn-primary' type='submit'>Add Task</button>
                 </div>
                     
                 </form>
             </div>
             <div className='table-responsive'>
+                <h1>Task List</h1>
                 <table className='table'>
-                    {tasks === null || tasks === undefined ? (
-                        <tr>You have no tasks</tr>
+                    {tasks === null || tasks === undefined || tasks.length === 0 ? (
+                        <tr><h4>You have no tasks</h4></tr>
                     ):(
                         <>
                             <thead>
