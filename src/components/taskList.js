@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Task from './task';
 import storageHelpers from './localStorageExports';
+import EditModal from './editModal';
 
 const {v4 : uuidv4} = require("uuid")
 
@@ -12,7 +13,6 @@ function TaskList() {
         const userTasks = storageHelpers.getUserTasks();
         
         setTasks(userTasks);
-
     }, []);
 
     useEffect(() => {
@@ -54,16 +54,30 @@ function TaskList() {
         setTasks(newTasks);
     });
 
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const [eTask , setETask] = useState();
+
+    const handleEditClick = ((tsk)=>{
+        setETask(tsk);
+        handleShow();
+    })
+
+    
+
     return (
         <>
-            <div>
+            <div className='container-fluid'>
                 <form method='Post' onSubmit={addItem}>
-                <div className='input-group'>
-                    <div class='form-floating mb-3 mt-3'>
+                <div className='input-group mb-3 mt-3'>
+                    <div className='form-floating'>
                         <input className='form-control' name='name' type='text' id='name' placeholder='Enter task' required />
                         <label for='name'>Task</label>
                     </div>
-                    <div class='form-floating mb-3 mt-3'>
+                    <div className='form-floating'>
                         <select className='form-control' name='priority' id='priority'>
                             <option value='Low'>Low</option>
                             <option value='Moderate'>Moderate</option>
@@ -72,7 +86,7 @@ function TaskList() {
                         <label for='priority'>Priority</label>
                     </div>
                     
-                    <div class='form-floating mb-3 mt-3'>
+                    <div className='form-floating'>
                         <input className='form-control' name='due' type='datetime-local' min={new Date().toISOString().slice(0, 16)} id='due' />
                         <label for='due'>Due Date</label>
                     </div>
@@ -82,17 +96,31 @@ function TaskList() {
                     
                 </form>
             </div>
-            <div>
-                <ul className='list-group list-group-flush d-flex flex-column'>
-                    {
-                        tasks.map((task) => {
-                            return <Task key={task.id} task={task} edit={editTask} remove={removeTask} />
-                        })
-                    }
-                </ul>
+            <div className='table-responsive'>
+                <table className='table'>
+                    {tasks === null || tasks === undefined ? (
+                        <tr>You have no tasks</tr>
+                    ):(
+                        <>
+                            <thead>
+                                <tr>
+                                    <th>Task</th>
+                                    <th>Due Date</th>
+                                    <th></th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                {tasks.map((task) => {
+                                    return <Task key={task.id} task={task} edit={editTask} remove={removeTask} show={handleEditClick} />
+                                })}
+                            </tbody>  
+                        </>  
+                    )}
+                </table>
             </div>
             
-            
+            <EditModal tsk={eTask} show={show} handleClose={handleClose} edit={editTask} />
         </>
     );
 }

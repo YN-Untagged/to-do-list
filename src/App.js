@@ -1,4 +1,4 @@
-import './App.css';
+import './css/App.css';
 import Login from './components/login';
 import Register from './components/register';
 import Home from './components/home';

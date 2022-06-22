@@ -1,0 +1,13 @@
+.form-floating{
+  border-radius: 0;
+}
+
+.todo-indicator {
+  width: 10px;
+  height: 60px;
+  border-radius: 0.3rem;
+}
+
+.task_item{
+  border-left: 10px solid black;
+}
