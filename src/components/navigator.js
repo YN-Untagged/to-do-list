@@ -10,10 +10,10 @@ function Navigator (){
     });
     
     return (
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-            <div class="container-fluid">
-                <span class="navbar-brand">Todo List</span>
-                <button class="btn btn-danger" type="button" onClick={logout}>Logout</button>
+        <nav className='navbar navbar-expand-sm navbar-dark bg-dark'>
+            <div className='container-fluid'>
+                <span className='navbar-brand'>Todo List</span>
+                <button className='btn btn-danger' type='button' onClick={logout}>Logout</button>
             </div>
         </nav>
     );

@@ -23,10 +23,9 @@ function Login () {
     });
 
     return (
-        <div>
-            <div>
-                <form id='login-form' onSubmit={checkUser}>
-                    <h1>Login</h1>
+            <div className='container mt-5'>
+                <form id='login-form' onSubmit={checkUser} className='login_form text-center border'>
+                    <h1 className='mb-5 mb-5'>Login</h1>
                     
                     <div className='input-group mb-5'>	
                         <span className='input-group-text'><i className='fas fa-envelope'></i></span>
@@ -38,11 +37,10 @@ function Login () {
                         <input className='form-control form-control-lg' type='password' name='password' placeholder='Password' required />
                     </div>
                     
-                    <button className='btn btn-dark btn-lg' type='submit' id='login-btn'>Login</button>
+                    <button className='btn btn-dark btn-lg' type='submit' id='login-btn'>Login</button><br/>
                     <span>Don't have an account? <Link to='/register'>Click here to sigup.</Link></span>
                 </form>
             </div>
-        </div>
     );
 }
 

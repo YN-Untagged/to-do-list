@@ -2,9 +2,9 @@ import React, {useState, useEffect} from 'react';
 import Task from './task';
 import storageHelpers from './localStorageExports';
 import EditModal from './editModal';
-
-const {v4 : uuidv4} = require("uuid")
-
+import AddTask from './addTask';
+import '../../node_modules/bootstrap/js/src/tab';
+import swal from 'sweetalert';
 
 function TaskList() {
     const [tasks, setTasks] = useState([]);
@@ -23,21 +23,7 @@ function TaskList() {
 
     }, [tasks]);
 
-    const addItem = ((event) => {
-        event.preventDefault();
-
-        const form = event.target;
-
-        const task = {
-            id : uuidv4(),
-            name : form.name.value,
-            priority: form.priority.value,
-            due: form.due.value,
-            date: Date.now(),
-            complete: false
-        };
-
-        form.reset();
+    const addItem = ((task) => {
         setTasks(prevTasks => {
             return [...prevTasks, task];
         });
@@ -53,6 +39,35 @@ function TaskList() {
         const newTasks = tasks.filter(task => task.id !== id);
         setTasks(newTasks);
     });
+
+    const deleteTasks = ((event)=> {
+        const btn = event.target.name;
+        let newTasks ;
+
+        swal({
+            title: "Delete " + btn +" tasks?",
+            text: "Once deleted, you will not be able to recover deleted tasks.",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((deleteTasks) => {
+            if (deleteTasks) {
+                if(btn === "all"){
+                    newTasks = [];
+                }
+                else if(btn === "completed"){
+                    newTasks = tasks.filter(task => !task.complete);
+                }
+                else if(btn === "incomplete"){
+                    newTasks = tasks.filter(task => task.complete);
+                }
+
+                setTasks(newTasks);
+            } 
+        });
+        
+    })
 
     const [show, setShow] = useState(false);
 
@@ -70,55 +85,101 @@ function TaskList() {
 
     return (
         <>
+            <AddTask addItem={addItem}/>
             <div className='container-fluid'>
-                <form method='Post' onSubmit={addItem}>
-                <div className='input-group mb-3 mt-3 w-100'>
-                    <div className='form-floating col-5'>
-                        <input className='form-control' name='name' type='text' id='name' placeholder='Enter task' required />
-                        <label for='name'>Task</label>
-                    </div>
-                    <div className='form-floating col-3'>
-                        <select className='form-control' name='priority' id='priority'>
-                            <option value='Low'>Low</option>
-                            <option value='Moderate'>Moderate</option>
-                            <option value='High'>High</option>
-                        </select>
-                        <label for='priority'>Priority</label>
-                    </div>
-                    
-                    <div className='form-floating col-3'>
-                        <input className='form-control' name='due' type='datetime-local' min={new Date().toISOString().slice(0, 16)} id='due' />
-                        <label for='due'>Due Date</label>
-                    </div>
-                    
-                    <button className='btn btn-primary' type='submit'>Add Task</button>
-                </div>
-                    
-                </form>
-            </div>
-            <div className='table-responsive'>
-                <h1>Task List</h1>
-                <table className='table'>
-                    {tasks === null || tasks === undefined || tasks.length === 0 ? (
-                        <tr><h4>You have no tasks</h4></tr>
-                    ):(
-                        <>
-                            <thead>
-                                <tr>
-                                    <th>Task</th>
-                                    <th>Due Date</th>
-                                    <th></th>
-                                </tr>
+                <h1>Tasks</h1>
+                {tasks === null || tasks === undefined || tasks.length === 0 ? (
+                    <h4>You have no tasks</h4>
+                )
+                :(
+                    <>
+                        <ul className='nav nav-tabs' role='tablist'>
+                            <li className='nav-item'>
+                                <a className='nav-link active' data-bs-toggle='tab' href='#all'>All</a>
+                            </li>
+                            <li className='nav-item'>
+                                <a className='nav-link' data-bs-toggle='tab' href='#todo'>Incomplete</a>
+                            </li>
+                            <li className='nav-item'>
+                                <a className='nav-link' data-bs-toggle='tab' href='#complete'>Complete</a>
+                            </li>
+                            <div className=' col d-flex justify-content-end'>
+                                <button className='btn btn-outline-info' name='incomplete' onClick={deleteTasks} >Clear Incomplete</button>
+                                <button className='btn btn-outline-warning' name='completed' onClick={deleteTasks} >Clear Complete</button>
+                                <button className= 'btn btn-outline-danger' name='all' onClick={deleteTasks} >Clear All</button>
+                            </div>
+                        </ul>
+                        <div className='tab-content'>
+                            <div id='all' className='container-fluid tab-pane active'>
+                                <div className='table-responsive'>
+                                    <table className='table'>
+                                        <thead>
+                                            <tr>
+                                                <th>Task</th>
+                                                <th>Due Date</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {tasks.map((task) => {
+                                                return <Task key={task.id} task={task} edit={editTask} remove={removeTask} show={handleEditClick} />
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id='todo' className='container-fluid tab-pane fade'>
+                                <div className='table-responsive'>
+                                    <table className='table'>
+                                        {(tasks.filter(task => !task.complete)).length === 0 ? (
+                                            <h4>You have no tasks</h4>
+                                        ):(
+                                            <>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Task</th>
+                                                        <th>Due Date</th>
+                                                        <th></th>
+                                                    </tr>
 
-                            </thead>
-                            <tbody>
-                                {tasks.map((task) => {
-                                    return <Task key={task.id} task={task} edit={editTask} remove={removeTask} show={handleEditClick} />
-                                })}
-                            </tbody>  
-                        </>  
-                    )}
-                </table>
+                                                </thead>
+                                                <tbody>
+                                                    {(tasks.filter(task => !task.complete)).map((task) => {
+                                                        return <Task key={task.id} task={task} edit={editTask} remove={removeTask} show={handleEditClick} />
+                                                    })}
+                                                </tbody>  
+                                            </>  
+                                        )}
+                                    </table>
+                                </div>
+                            </div>
+                            <div id='complete' className='container-fluid tab-pane fade'>
+                                <div className='table-responsive'>
+                                    <table className='table'>
+                                        {(tasks.filter(task => task.complete)).length === 0 ? (
+                                            <tr><h4>You have no tasks</h4></tr>
+                                        ):(
+                                            <>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Task</th>
+                                                        <th>Due Date</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {(tasks.filter(task => task.complete)).map((task) => {
+                                                        return <Task key={task.id} task={task} edit={editTask} remove={removeTask} show={handleEditClick} />
+                                                    })}
+                                                </tbody>  
+                                            </>  
+                                        )}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
             
             <EditModal tsk={eTask} show={show} handleClose={handleClose} edit={editTask} />
@@ -127,3 +188,7 @@ function TaskList() {
 }
 
 export default TaskList;
+
+<>
+    
+</>

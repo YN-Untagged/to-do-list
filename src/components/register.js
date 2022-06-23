@@ -37,19 +37,10 @@ function Register () {
         }
     });
 
-    const saveImage = ((e)=>{
-        let reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
-
-        reader.onload = function(){
-            sessionStorage.setItem('profile', reader.result);
-        };
-    });
-
     return (
-        <div>
-            <form id='register-form' onSubmit={registerUser}>
-                <h1>Register</h1>
+        <div className='container mt-5'>
+            <form id='register-form' onSubmit={registerUser} className='login_form text-center border'>
+                <h1 className='mb-5'>Register</h1>
                 <div className='input-group mb-5'>
                     <span className='input-group-text'><i className='fas fa-user-tie'></i></span>
                     <input className='form-control' type='text' name='name' placeholder='Name' required /> <span>&emsp;&emsp;</span>
@@ -67,11 +58,8 @@ function Register () {
                     <span className='input-group-text'><i className='fas fa-lock'></i></span>
                     <input className='form-control' type='password' name='cpassword' placeholder='Confirm Password' required />
                 </div>
-                <div className='input-group mb-5'>
-                    <input className='form-control' type='file' name='profile' onChange={saveImage}/>
-                </div>
 
-                <button className='btn btn-dark btn-lg' type='submit' id='reg-btn'>Register</button>
+                <button className='btn btn-dark btn-lg' type='submit' id='reg-btn'>Register</button><br/>
                 <span>Already have an account? <Link to='/login'>Click here to sigin.</Link></span>
             </form>
         </div>
@@ -95,20 +83,14 @@ function RegisterUser(form){
 
     //If no user is found, add user to storage
     if(!found){
-        let src = 'images/profile.jpg'; 
         const users = JSON.parse(localStorage.getItem('users')),
         password = storageHelpers.hashPassword(form.password.value);
-
-        if(sessionStorage.getItem('profile') !== null ){
-            src = sessionStorage.getItem('profile');
-        } 
 
         const user = {
             name: form.name.value,
             surname: form.surname.value,
             email: form.email.value,
             password: password,
-            src: src,
             tasks: []
         }
 
