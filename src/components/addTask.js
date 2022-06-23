@@ -29,7 +29,8 @@ function AddTask ({addItem}){
                         <label htmlFor='name'>Task</label>
                     </div>
                     <div className='form-floating col-3'>
-                        <select className='form-control' name='priority' id='priority'>
+                        <select className='form-control' name='priority' id='priority' placeholder='Select' required>
+                            <option value="" selected disabled hidden>Select priority</option>
                             <option value='Low'>Low</option>
                             <option value='Moderate'>Moderate</option>
                             <option value='High'>High</option>
